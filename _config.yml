@@ -20,10 +20,8 @@ text_skin: default
 highlight_theme: "tomorrow-night" # "default" (default), "tomorrow", "tomorrow-night", "tomorrow-night-eighties", "tomorrow-night-blue", "tomorrow-night-bright"
 url     : https://imjjun.github.io
 baseurl : # does not include hostname
-title   : "Learning the Machine Learning"
-description: "Korea Univ. D.o.E." # this means to ignore newlines until "Language & timezone"
-  Your Site Description
-
+title   : Learning the Machine Learning
+description: Korea Univ. D.o.E. # this means to ignore newlines until "Language & timezone"
 
 ## => Language and Timezone
 ##############################
