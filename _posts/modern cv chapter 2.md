@@ -1,0 +1,814 @@
+1) Pytorch tensors
+
+
+```python
+import torch
+x=torch.tensor([[1,2]])
+y=torch.tensor([[1],[2]])
+print(x.shape)
+print(y.shape)
+print(x.dtype)
+```
+
+    torch.Size([1, 2])
+    torch.Size([2, 1])
+    torch.int64
+
+
+
+```python
+x=torch.tensor([False, 1, 2.0])
+print(x)
+```
+
+    tensor([0., 1., 2.])
+
+
+
+```python
+torch.zeros((3,4))
+```
+
+
+
+
+    tensor([[0., 0., 0., 0.],
+            [0., 0., 0., 0.],
+            [0., 0., 0., 0.]])
+
+
+
+
+```python
+torch.ones((3,4))
+```
+
+
+
+
+    tensor([[1., 1., 1., 1.],
+            [1., 1., 1., 1.],
+            [1., 1., 1., 1.]])
+
+
+
+
+```python
+torch.randint(low=0, high=10, size=(3,4))
+```
+
+
+
+
+    tensor([[9, 7, 1, 6],
+            [0, 7, 7, 4],
+            [7, 3, 3, 2]])
+
+
+
+
+```python
+torch.rand(3,4)
+```
+
+
+
+
+    tensor([[0.9996, 0.0066, 0.7666, 0.1767],
+            [0.3767, 0.7094, 0.0518, 0.2058],
+            [0.5870, 0.0721, 0.1820, 0.8492]])
+
+
+
+
+```python
+torch.randn((3,4))
+```
+
+
+
+
+    tensor([[ 1.0117, -1.8132, -0.5204, -0.9845],
+            [-0.5840,  0.4267, -0.9037,  1.3963],
+            [-0.9431, -2.3418, -1.4480, -0.1557]])
+
+
+
+
+```python
+import numpy as np
+x=np.array([[10,20,30],[2,3,4]])
+y=torch.tensor(x)
+print(type(x),type(y))
+```
+
+    <class 'numpy.ndarray'> <class 'torch.Tensor'>
+
+
+2) Operation of Tensor
+
+
+```python
+import torch
+x=torch.tensor([[1,2,3,4],[5,6,7,8]])
+print(x*10)
+```
+
+    tensor([[10, 20, 30, 40],
+            [50, 60, 70, 80]])
+
+
+
+```python
+x=torch.tensor([[1,2,3,4],[5,6,7,8]])
+y=x.add(10)
+print(y)
+```
+
+    tensor([[11, 12, 13, 14],
+            [15, 16, 17, 18]])
+
+
+
+```python
+y=torch.tensor([2,3,1,0])
+print(y.shape)
+y=y.view(4,1)
+print(y.shape)
+```
+
+    torch.Size([4])
+    torch.Size([4, 1])
+
+
+
+```python
+x=torch.rand(10,1,10)
+z1=torch.squeeze(x,1)
+z2=x.squeeze(1)
+assert torch.all(z1==z2)
+print('Squeeze:\n', x.shape, z1.shape)
+```
+
+    Squeeze:
+     torch.Size([10, 1, 10]) torch.Size([10, 10])
+
+
+
+```python
+x=torch.rand(10,10)
+print(x.shape)
+z1=x.unsqueeze(0)
+print(z1.shape)
+z2, z3, z4=x[None],x[:,None],x[:,:,None]
+print(z2.shape, z3.shape, z4.shape)
+```
+
+    torch.Size([10, 10])
+    torch.Size([1, 10, 10])
+    torch.Size([1, 10, 10]) torch.Size([10, 1, 10]) torch.Size([10, 10, 1])
+
+
+
+```python
+x=torch.tensor([[1,2,3,4],[5,6,7,8]])
+y=torch.tensor([[2,3,1,0]])
+y=y.view(4,1)
+print(torch.matmul(x,y))
+```
+
+    tensor([[11],
+            [35]])
+
+
+
+```python
+print(x@y)
+```
+
+    tensor([[11],
+            [35]])
+
+
+
+```python
+import torch
+x=torch.rand(10,10,10)
+z=torch.cat([x,x],axis=0)
+print(x.shape, z.shape)
+```
+
+    torch.Size([10, 10, 10]) torch.Size([20, 10, 10])
+
+
+
+```python
+x=torch.arange(25).reshape(5,5)
+print(x.shape, x.max()) #extraction of maximum value
+```
+
+    torch.Size([5, 5]) tensor(24)
+
+
+
+```python
+x.max(dim=0) #dim=0 -> row of tensor
+#indices-> max index of each row
+```
+
+
+
+
+    torch.return_types.max(
+    values=tensor([20, 21, 22, 23, 24]),
+    indices=tensor([4, 4, 4, 4, 4]))
+
+
+
+
+```python
+m, argm=x.max(dim=1)
+print(m, argm)
+```
+
+    tensor([ 4,  9, 14, 19, 24]) tensor([4, 4, 4, 4, 4])
+
+
+
+```python
+x=torch.rand(10,20,30)
+z=x.permute(2,0,1)
+print(x.shape, z.shape)
+```
+
+    torch.Size([10, 20, 30]) torch.Size([30, 10, 20])
+
+
+3) Auto gradients of tensor objects
+
+
+```python
+import torch
+x=torch.tensor([[2., -1.],[1.,1.]],requires_grad=True)
+print(x)
+```
+
+    tensor([[ 2., -1.],
+            [ 1.,  1.]], requires_grad=True)
+
+
+
+```python
+out=x.pow(2).sum()
+```
+
+
+```python
+out.backward()
+```
+
+
+```python
+x.grad
+```
+
+
+
+
+    tensor([[ 4., -2.],
+            [ 2.,  2.]])
+
+
+
+4) Advantages of PyTorch's tensors over NumPy's ndarrays
+
+
+```python
+import torch
+x=torch.rand(1,6400)
+y=torch.rand(6400, 5000)
+device='cuda' if torch.cuda.is_available() else 'cpu'
+```
+
+
+```python
+x,y=x.to(device), y.to(device)
+%timeit z=(x@y)
+```
+
+    The slowest run took 9.64 times longer than the fastest. This could mean that an intermediate result is being cached.
+    31.6 µs ± 40 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+
+
+```python
+x,y=x.cpu(), y.cpu()
+%timeit z=(x@y)
+```
+
+    11.4 ms ± 701 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+
+
+```python
+import numpy as np
+x=np.random.random((1,6400))
+y=np.random.random((6400, 5000))
+%timeit z=np.matmul(x,y)
+```
+
+    22.5 ms ± 981 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+
+
+5) Building a neural network using PyTorch
+
+
+```python
+import torch
+x=[[1,2],[3,4],[5,6],[7,8]]
+y=[[3],[7],[11],[15]]
+X=torch.tensor(x).float()
+Y=torch.tensor(y).float()
+```
+
+
+```python
+device='cuda' if torch.cuda.is_available() else 'cpu'
+X=X.to(device)
+Y=Y.to(device)
+```
+
+
+```python
+import torch.nn as nn
+class MyNeuralNet(nn.Module):
+  def __init__(self):
+    super().__init__()
+    self.input_to_hidden_layer=nn.Linear(2,8)
+    self.hidden_layer_activation = nn.ReLU()
+    self.hidden_to_output_layer=nn.Linear(8, 1)
+    print(nn.Linear(2,7))
+
+  def forward(self, x):
+    x=self.input_to_hidden_layer(x)
+    x=self.hidden_layer_activation(x)
+    x=self.hidden_to_output_layer(x)
+    return x
+    
+```
+
+
+```python
+mynet=MyNeuralNet().to(device)
+```
+
+    Linear(in_features=2, out_features=7, bias=True)
+
+
+
+```python
+loss_func=nn.MSELoss()
+```
+
+
+```python
+_Y=mynet(X)
+loss_value=loss_func(_Y,Y)
+print(loss_value)
+```
+
+    tensor(111.8386, device='cuda:0', grad_fn=<MseLossBackward0>)
+
+
+
+```python
+from torch.optim import SGD
+opt=SGD(mynet.parameters(),lr=0.001)
+```
+
+
+```python
+losses=[]
+for _ in range(50):
+  opt.zero_grad()
+  loss_value=loss_func(mynet(X),Y)
+  loss_value.backward()
+  opt.step()
+  losses.append(float(loss_value))
+```
+
+
+```python
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.plot(losses)
+plt.title('Loss Variation over increasing epochs')
+plt.xlabel('epochs')
+plt.ylabel('loss value')
+```
+
+
+
+
+    Text(0, 0.5, 'loss value')
+
+
+
+
+![png](modern%20cv%20chapter%202_files/modern%20cv%20chapter%202_41_1.png)
+
+
+6) Dataset, DataLoader, and Batch size
+
+
+```python
+from torch.utils.data import Dataset, DataLoader
+import torch
+import torch.nn as nn
+```
+
+
+```python
+x=[[1,2],[3,4],[5,6],[7,8]]
+y=[[3],[7],[11],[15]]
+X=torch.tensor(x).float()
+Y=torch.tensor(y).float()
+```
+
+
+```python
+device='cuda' if torch.cuda.is_available() else 'cpu'
+X=X.to(device)
+Y=Y.to(device)
+```
+
+
+```python
+class MyDataset(Dataset):
+  def __init__(self, x, y):
+    self.x=torch.tensor(x).float()
+    self.y=torch.tensor(y).float()
+
+  def __len__(self):
+    return len(self.x)
+
+  def __getitem__(self, ix):
+    return self.x[ix], self.y[ix]
+```
+
+
+```python
+ds=MyDataset(X,Y)
+```
+
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:4: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+      after removing the cwd from sys.path.
+
+
+
+```python
+dl=DataLoader(ds, batch_size=2, shuffle=True)
+```
+
+
+```python
+class MyNeuralNet(nn.Module):
+  def __init__(self):
+    super().__init__()
+    self.input_to_hidden_layer=nn.Linear(2,8)
+    self.hidden_layer_activation = nn.ReLU()
+    self.hidden_to_output_layer=nn.Linear(8, 1)
+    print(nn.Linear(2,7))
+
+  def forward(self, x):
+    x=self.input_to_hidden_layer(x)
+    x=self.hidden_layer_activation(x)
+    x=self.hidden_to_output_layer(x)
+    return x
+    
+```
+
+
+```python
+mynet=MyNeuralNet().to(device)
+loss_func=nn.MSELoss()
+from torch.optim import SGD
+opt=SGD(mynet.parameters(),lr=0.001)
+```
+
+    Linear(in_features=2, out_features=7, bias=True)
+
+
+
+```python
+import time
+losses=[]
+start=time.time()
+for i in range(50):
+  for data in dl:
+    opt.zero_grad()
+    loss_value=loss_func(mynet(X),Y)
+    loss_value.backward()
+    opt.step()
+    losses.append(loss_value)
+  end=time.time()
+  print(end-start)
+```
+
+    0.006906032562255859
+    0.009884119033813477
+    0.01239323616027832
+    0.014763832092285156
+    0.0171663761138916
+    0.019515275955200195
+    0.02203989028930664
+    0.024400949478149414
+    0.026755809783935547
+    0.029118776321411133
+    0.03164815902709961
+    0.034024953842163086
+    0.03649425506591797
+    0.040576934814453125
+    0.04501938819885254
+    0.04735374450683594
+    0.049863576889038086
+    0.05244565010070801
+    0.054770469665527344
+    0.057306528091430664
+    0.05977487564086914
+    0.062389373779296875
+    0.06485652923583984
+    0.06730318069458008
+    0.06981134414672852
+    0.0724642276763916
+    0.07494449615478516
+    0.07741332054138184
+    0.07997345924377441
+    0.0825800895690918
+    0.08510708808898926
+    0.08742022514343262
+    0.08983612060546875
+    0.09230399131774902
+    0.0947268009185791
+    0.09705090522766113
+    0.09940409660339355
+    0.10192322731018066
+    0.10431790351867676
+    0.10674738883972168
+    0.10916733741760254
+    0.11171865463256836
+    0.11426281929016113
+    0.11670851707458496
+    0.11924505233764648
+    0.12202858924865723
+    0.12452030181884766
+    0.1272587776184082
+    0.12993884086608887
+    0.13276910781860352
+
+
+7) Predicting on new data points
+
+
+```python
+val_x=[[10,11]]
+val_x=torch.tensor(val_x).float().to(device)
+mynet(val_x)
+```
+
+
+
+
+    tensor([[21.0410]], device='cuda:0', grad_fn=<AddmmBackward0>)
+
+
+
+8) Implementing a custom loss function
+
+
+```python
+x=[[1,2],[3,4],[5,6],[7,8]]
+y=[[3],[7],[11],[15]]
+import torch
+X=torch.tensor(x).float()
+Y=torch.tensor(y).float()
+import torch.nn as nn
+device='cuda' if torch.cuda.is_available() else 'cpu'
+X=X.to(device)
+Y=Y.to(device)
+```
+
+
+```python
+def my_mean_squared_error(_y,y):
+  loss=(_y-y)**2
+  loss=loss.mean()
+  return loss
+```
+
+
+```python
+loss_func=nn.MSELoss()
+loss_value=loss_func(mynet(X),Y)
+print(loss_value)
+```
+
+    tensor(0.0004, device='cuda:0', grad_fn=<MseLossBackward0>)
+
+
+
+```python
+my_mean_squared_error(mynet(X),Y)
+```
+
+
+
+
+    tensor(0.0004, device='cuda:0', grad_fn=<MeanBackward0>)
+
+
+
+9) Using a sequential method to build a neural network
+
+
+```python
+x=[[1,2],[3,4],[5,6],[7,8]]
+y=[[3],[7],[11],[15]]
+```
+
+
+```python
+import torch
+import torch.nn as nn
+import numpy as np
+from torch.utils.data import Dataset, DataLoader
+device='cuda' if torch.cuda.is_available() else 'cpu'
+```
+
+
+```python
+class MyDataset(Dataset):
+  def __init__(self,x,y):
+    self.x=torch.tensor(x).float().to(device)
+    self.y=torch.tensor(y).float().to(device)
+  def __getitem__(self,ix):
+    return self.x[ix], self.y[ix]
+  def __len__(self):
+    return len(self.x)
+```
+
+
+```python
+ds=MyDataset(x,y)
+dl=DataLoader(ds, batch_size=2, shuffle=True)
+```
+
+
+```python
+model=nn.Sequential(
+    nn.Linear(2,8),
+    nn.ReLU(),
+    nn.Linear(8,1)
+)
+```
+
+
+```python
+!pip install torch_summary
+```
+
+    Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/public/simple/
+    Collecting torch_summary
+      Downloading torch_summary-1.4.5-py3-none-any.whl (16 kB)
+    Installing collected packages: torch-summary
+    Successfully installed torch-summary-1.4.5
+
+
+
+```python
+from torchsummary import summary
+summary(model, torch.zeros(1,2))
+```
+
+    ==========================================================================================
+    Layer (type:depth-idx)                   Output Shape              Param #
+    ==========================================================================================
+    ├─Linear: 1-1                            [-1, 8]                   24
+    ├─ReLU: 1-2                              [-1, 8]                   --
+    ├─Linear: 1-3                            [-1, 1]                   9
+    ==========================================================================================
+    Total params: 33
+    Trainable params: 33
+    Non-trainable params: 0
+    Total mult-adds (M): 0.00
+    ==========================================================================================
+    Input size (MB): 0.00
+    Forward/backward pass size (MB): 0.00
+    Params size (MB): 0.00
+    Estimated Total Size (MB): 0.00
+    ==========================================================================================
+
+
+
+
+
+    ==========================================================================================
+    Layer (type:depth-idx)                   Output Shape              Param #
+    ==========================================================================================
+    ├─Linear: 1-1                            [-1, 8]                   24
+    ├─ReLU: 1-2                              [-1, 8]                   --
+    ├─Linear: 1-3                            [-1, 1]                   9
+    ==========================================================================================
+    Total params: 33
+    Trainable params: 33
+    Non-trainable params: 0
+    Total mult-adds (M): 0.00
+    ==========================================================================================
+    Input size (MB): 0.00
+    Forward/backward pass size (MB): 0.00
+    Params size (MB): 0.00
+    Estimated Total Size (MB): 0.00
+    ==========================================================================================
+
+
+
+
+```python
+loss_func=nn.MSELoss()
+from torch.optim import SGD
+opt=SGD(model.parameters(), lr=0.001)
+import time
+losses=[]
+start=time.time()
+for i in range(50):
+  for ix, iy in dl:
+    opt.zero_grad()
+    loss_value=loss_func(model(ix),iy)
+    loss_value.backward()
+    opt.step()
+    losses.append(loss_value)
+end=time.time()
+print(end-start)
+```
+
+    0.09772706031799316
+
+
+
+```python
+val=[[8,9],[10,11],[1.5,2.5]]
+```
+
+
+```python
+model(torch.tensor(val).float().to(device))
+```
+
+
+
+
+    tensor([[16.5348],
+            [20.2018],
+            [ 4.5540]], device='cuda:0', grad_fn=<AddmmBackward0>)
+
+
+
+10) Saving and loading a PyTorch model
+
+
+```python
+#saving
+torch.save(model.to('cpu').state_dict(), 'mymodel.pth')
+```
+
+
+```python
+#loading
+#1. Create an empty model with the same command that was used in the first place when training
+model=nn.Sequential(
+    nn.Linear(2,8),
+    nn.ReLU(),
+    nn.Linear(8,1)
+).to(device)
+#Load the model from disk / unserialize it to create an orderedDict value
+state_dict=torch.load('mymodel.pth')
+model.load_state_dict(state_dict)
+model.to(device)
+model(torch.tensor(val).float().to(device))
+```
+
+
+
+
+    tensor([[16.5348],
+            [20.2018],
+            [ 4.5540]], device='cuda:0', grad_fn=<AddmmBackward0>)
+
+
+
+
+```python
+!
+```
